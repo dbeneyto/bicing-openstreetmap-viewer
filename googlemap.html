@@ -22,32 +22,22 @@ function displayLocation(location) {
     lon = JSON.parse(location)[1];
     ocupation = JSON.parse(location)[2];
 
-    if (ocupation > 66) {
-        var position = new google.maps.LatLng(parseFloat(lat), parseFloat(lon));
-        var marker = new google.maps.Marker({
-            icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png',
-            map: map, 
-            position: position,
-        });
-    } else if (ocupation > 34) {
-            var position = new google.maps.LatLng(parseFloat(lat), parseFloat(lon));
-        var marker = new google.maps.Marker({
-            icon: 'http://maps.google.com/mapfiles/ms/icons/orange-dot.png',
-            map: map, 
-            position: position,
-});
-
-}
-    else {
-        var position = new google.maps.LatLng(parseFloat(lat), parseFloat(lon));
-        var marker = new google.maps.Marker({
-            icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png',
-            map: map, 
-            position: position,
-});
-
-
+    if (ocupation > 60) {
+            var icon_img = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'; 
+    } else if (ocupation > 30) {
+            var icon_img = 'http://maps.google.com/mapfiles/ms/icons/orange-dot.png';
+    } else {
+            var icon_img = 'http://maps.google.com/mapfiles/ms/icons/red-dot.png';
     }
+    var icon = new google.maps.MarkerImage(icon_img, null, null, new google.maps.Point(0, 32), new google.maps.Size(32,32));
+
+        var position = new google.maps.LatLng(parseFloat(lat), parseFloat(lon));
+        var marker = new google.maps.Marker({
+            icon: icon,
+            map: map, 
+            position: position,
+});
+
          
 }
 
