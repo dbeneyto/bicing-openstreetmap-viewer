@@ -70,6 +70,7 @@ try {
        var position = new OpenLayers.LonLat(lng,lat).transform( fromProjection, toProjection);
        markers.addMarker(new OpenLayers.Marker(position));
     }
+    
  
 </script>
 </body>
