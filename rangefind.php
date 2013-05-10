@@ -1,10 +1,3 @@
-<!DOCTYPE HTML>
-<html>
-<head>
-<title>MongoDB range search</title>
-</head>
-<body>
-
 <?php
 try {
   // open connection to MongoDB server
@@ -19,7 +12,7 @@ try {
   $last_element = $collection->find()->sort(array('_id' => -1))->limit(1);
   $first_element = $collection->find()->sort(array('_id' => 1))->limit(1);
 
-  echo "Data captured from: ";
+  echo "Bicing station availability timelapse from: ";
 
   foreach ($first_element as $obj) {
      echo date('Y-m-d H:i:s',$obj['timestamp']->sec);
@@ -39,5 +32,3 @@ try {
   die('Error: ' . $e->getMessage());
 }
 ?>
-</body>
-</html>

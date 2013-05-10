@@ -6,6 +6,17 @@
     <script src="http://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
     <script>
 
+function showMarkers(req) {
+   makeRequest('./get_stationswd.php', function(data) {
+        var data = JSON.parse(data.responseText);   
+        for (var j = 0; j < data.length; j++) {
+          if (req<1)
+             displayLocation(data[j]);
+          else { updateMarkers(data[j]); }
+        }
+    });
+}
+
 function makeRequest(url, callback) {
     var request;
     if (window.XMLHttpRequest) {
@@ -13,45 +24,46 @@ function makeRequest(url, callback) {
     } else {
         request = new ActiveXObject("Microsoft.XMLHTTP"); // IE6, IE5
     }
+    
+
+    request.open("GET", url+"?range="+range, true);
+
     request.onreadystatechange = function() {
         if (request.readyState == 4 && request.status == 200) {
             callback(request);
         }
     }
-    request.open("GET", url, true);
     request.send();
 }
 
 var map;
 var markers = [];
+var range;
 
 function initialize() {
   var haightAshbury = new google.maps.LatLng(41.405, 2.185593);
   var mapOptions = {
-    zoom: 14,
+    zoom: 13,
     center: haightAshbury,
     mapTypeId: google.maps.MapTypeId.ROADMAP
   };
   map = new google.maps.Map(document.getElementById('map-canvas'),
       mapOptions);
 
-      makeRequest('./get_stations.php', function(data) {
-        var data = JSON.parse(data.responseText);    
-        for (var i = 0; i < data.length; i++) {
- 	    displayLocation(data[i]);
-        }
+//http://localhost/bicing/rangefind.php
+
+      makeRequest('./rangefind.php', function(timelapse_range) {
+        document.getElementById("panel").innerHTML = timelapse_range.responseText;
     }); 
 
-window.setInterval(function(){
-  makeRequest('./get_stations.php', function(data) {
-        var data = JSON.parse(data.responseText);    
-        for (var i = 0; i < data.length; i++) {
-            displayLocation(data[i]);
-        }
-    });
-  deleteOverlays();
-}, 1000);
 
+      makeRequest('./get_intervals.php', function(intervals) {
+        var intervals = JSON.parse(intervals.responseText);    
+        for (var i = 0; i < intervals.length; i++) {
+	   range=intervals[i];
+           window.setInterval(showMarkers(i),1000);
+	}
+    }); 
 }
 
 // Add a marker to the map and push to the array.
@@ -78,6 +90,33 @@ function displayLocation(location) {
 });        
 markers.push(marker);
 }
+
+// Modify marker
+function updateMarkers(location) {
+    
+    lat = JSON.parse(location)[0];
+    lon = JSON.parse(location)[1];
+    ocupation = JSON.parse(location)[2];
+    var position = new google.maps.LatLng(parseFloat(lat), parseFloat(lon));
+
+    if (ocupation > 60) {
+            var icon_img = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'; 
+    } else if (ocupation > 30) {
+            var icon_img = 'http://maps.google.com/mapfiles/ms/icons/orange-dot.png';
+    } else {
+            var icon_img = 'http://maps.google.com/mapfiles/ms/icons/red-dot.png';
+    }
+    var icon = new google.maps.MarkerImage(icon_img, null, null, new google.maps.Point(0, 32), new google.maps.Size(32,32));
+
+    var loopit=true;
+    for (i=0; i<markers.length && loopit; i++) {
+      if (markers[i].position.equals(position)) {
+           loopit=false;
+           markers[i].setIcon(icon);
+        }
+    }
+}
+
 
 // Sets the map on all markers in the array.
 function setAllMap(map) {
@@ -108,9 +147,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
   </head>
   <body>
     <div id="panel">
-      Bicing availability timelapse
     </div>
     <div id="map-canvas"></div>
-    <p>Click on the map to add markers.</p>
   </body>
 </html>

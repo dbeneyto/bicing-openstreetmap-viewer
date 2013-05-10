@@ -1,5 +1,5 @@
 <?php
-  
+
   // open connection to MongoDB server
   $conn = new Mongo('localhost');
 
@@ -10,11 +10,14 @@
   $collection = $db->data;
 
 //header("Content-type: text/json");
-  $date_range=$_GET["range"];
-  error_log($date_range);
-  $mongotime=new MongoDate(strtotime($date_range));
 
-  $collectionQuery=array('timestamp'=> $mongotime);
+  $last_element = $collection->find()->sort(array('_id' => -1))->limit(1);
+
+  foreach ($last_element as $obj) {
+     $last_timestamp=$obj['timestamp']->sec;
+  }
+  $mongotime = New Mongodate($last_timestamp);
+  $collectionQuery=array('timestamp'=>$mongotime);
 
   $last_collection = $collection->find($collectionQuery);
 
@@ -22,8 +25,7 @@
   foreach ($last_collection as $obj) {
     $lat=$obj['lat']/1000000;
     $lng=$obj['lng']/1000000;
-    $ocupation=$obj['free']*100/($obj['bikes']+$obj['free']);
-    $marker=array($lat,$lng,$ocupation);
+    $marker=array($lat,$lng);
     array_push($stations,json_encode($marker));
   }
 
