@@ -77,6 +77,8 @@ function displayLocation(location) {
             var icon_img = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'; 
     } else if (ocupation > 30) {
             var icon_img = 'http://maps.google.com/mapfiles/ms/icons/orange-dot.png';
+    } else if (ocupation == 0) {
+            var icon_img = 'http://maps.google.com/mapfiles/ms/icons/pink-dot.png';
     } else {
             var icon_img = 'http://maps.google.com/mapfiles/ms/icons/red-dot.png';
     }
@@ -103,6 +105,8 @@ function updateMarkers(location) {
             var icon_img = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'; 
     } else if (ocupation > 30) {
             var icon_img = 'http://maps.google.com/mapfiles/ms/icons/orange-dot.png';
+    } else if (ocupation == 0) {
+            var icon_img = 'http://maps.google.com/mapfiles/ms/icons/pink-dot.png';
     } else {
             var icon_img = 'http://maps.google.com/mapfiles/ms/icons/red-dot.png';
     }
